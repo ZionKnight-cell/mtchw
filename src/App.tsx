@@ -197,8 +197,19 @@ function App() {
     <main className="app-shell">
       <section className="phone-frame">
         <header className="app-header">
-          <h1>mtchw</h1>
-          <p className="tagline">Tiny ideas for bored moments.</p>
+          <div className="brand-lockup">
+            <img
+              src="/mtchw-icon-192.png"
+              alt=""
+              className="brand-icon"
+              aria-hidden="true"
+            />
+
+            <div>
+              <h1>mtchw</h1>
+              <p className="tagline">Tiny ideas for bored moments.</p>
+            </div>
+          </div>
         </header>
 
         <section className="screen-content">
@@ -246,10 +257,7 @@ function App() {
           )}
 
           {currentScreen === "history" && (
-            <HistoryScreen
-              history={history}
-              onClearHistory={handleClearHistory}
-            />
+            <HistoryScreen history={history} onClearHistory={handleClearHistory} />
           )}
         </section>
 
@@ -258,21 +266,24 @@ function App() {
             className={currentScreen === "home" ? "active" : ""}
             onClick={() => setCurrentScreen("home")}
           >
-            Home
+            <span className="nav-icon">⌂</span>
+            <span>Home</span>
           </button>
 
           <button
             className={currentScreen === "saved" ? "active" : ""}
             onClick={() => setCurrentScreen("saved")}
           >
-            Saved
+            <span className="nav-icon">♡</span>
+            <span>Saved</span>
           </button>
 
           <button
             className={currentScreen === "history" ? "active" : ""}
             onClick={() => setCurrentScreen("history")}
           >
-            History
+            <span className="nav-icon">◷</span>
+            <span>History</span>
           </button>
         </nav>
       </section>
@@ -289,7 +300,10 @@ function HomeScreen({
 }) {
   return (
     <div className="home-screen">
-      <div className="hero-card">
+      <div className="hero-card home-hero-card">
+        <span className="decor-sparkle sparkle-one">✦</span>
+        <span className="decor-sparkle sparkle-two">✦</span>
+
         <h2>I’m bored.</h2>
         <p>
           Pick your energy, time, and mood for the moment. mtchw will give you
