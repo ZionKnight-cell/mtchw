@@ -49,12 +49,13 @@ export function getSuggestedActivity({
   }
 
   if (matchingActivities.length > 0) {
-  if (similarToActivity) {
-    return pickRandomActivityFromTopResults(matchingActivities);
+    if (similarToActivity) {
+      return pickRandomActivityFromTopResults(matchingActivities);
+    }
+
+    return pickRandomActivity(matchingActivities);
   }
 
-  return pickRandomActivity(matchingActivities);
-}
   const relaxedMatches = getRelaxedMatches({
     activities: availableActivities,
     preferences,
@@ -62,16 +63,18 @@ export function getSuggestedActivity({
   });
 
   if (similarToActivity && relaxedMatches.length > 0) {
-  return pickRandomActivityFromTopResults(
-    sortBySimilarity(relaxedMatches, similarToActivity)
-  );
-}
+    return pickRandomActivityFromTopResults(
+      sortBySimilarity(relaxedMatches, similarToActivity)
+    );
+  }
 
   if (relaxedMatches.length > 0) {
     return pickRandomActivity(relaxedMatches);
   }
 
-  return pickRandomActivity(availableActivities.length > 0 ? availableActivities : activities);
+  return pickRandomActivity(
+    availableActivities.length > 0 ? availableActivities : activities
+  );
 }
 
 export function activityMatchesPreferences(
