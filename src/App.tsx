@@ -13,7 +13,6 @@ import {
   getSuggestedActivity,
 } from "./utils/activitySuggestions";
 import {
-  clearAllMtchwData,
   clearHistory,
   clearSavedActivities,
   loadHistory,
@@ -25,7 +24,7 @@ import {
 } from "./utils/storage";
 import "./styles/app.css";
 
-type Screen = "home" | "preferences" | "activity" | "saved" | "history" | "settings";
+type Screen = "home" | "preferences" | "activity" | "saved" | "history";
 
 const defaultPreferences: UserPreferences = {
   energy: "surprise",
@@ -190,17 +189,6 @@ function App() {
     clearHistory();
   }
 
-  function handleResetAppData() {
-    setSavedActivityIds([]);
-    setHistory([]);
-    setSelectedPreferences(defaultPreferences);
-    setCurrentActivity(null);
-    setCompletionMessage("");
-    setCurrentActivityDone(false);
-    clearAllMtchwData();
-    setCurrentScreen("home");
-  }
-
   const savedActivities = activities.filter((activity) =>
     savedActivityIds.includes(activity.id)
   );
@@ -209,9 +197,8 @@ function App() {
     <main className="app-shell">
       <section className="phone-frame">
         <header className="app-header">
-          <p className="eyebrow">boredom button</p>
           <h1>mtchw</h1>
-          <p className="tagline">One tiny thing to do when you’re bored.</p>
+          <p className="tagline">Tiny ideas for bored moments.</p>
         </header>
 
         <section className="screen-content">
@@ -254,16 +241,14 @@ function App() {
               savedActivities={savedActivities}
               onTryActivity={handleTrySavedActivity}
               onRemoveActivity={handleRemoveSavedActivity}
+              onClearSavedActivities={handleClearSavedActivities}
             />
           )}
 
-          {currentScreen === "history" && <HistoryScreen history={history} />}
-
-          {currentScreen === "settings" && (
-            <SettingsScreen
-              onClearSavedActivities={handleClearSavedActivities}
+          {currentScreen === "history" && (
+            <HistoryScreen
+              history={history}
               onClearHistory={handleClearHistory}
-              onResetAppData={handleResetAppData}
             />
           )}
         </section>
@@ -288,13 +273,6 @@ function App() {
             onClick={() => setCurrentScreen("history")}
           >
             History
-          </button>
-
-          <button
-            className={currentScreen === "settings" ? "active" : ""}
-            onClick={() => setCurrentScreen("settings")}
-          >
-            Settings
           </button>
         </nav>
       </section>
@@ -523,10 +501,12 @@ function SavedScreen({
   savedActivities,
   onTryActivity,
   onRemoveActivity,
+  onClearSavedActivities,
 }: {
   savedActivities: Activity[];
   onTryActivity: (activity: Activity) => void;
   onRemoveActivity: (activityId: string) => void;
+  onClearSavedActivities: () => void;
 }) {
   if (savedActivities.length === 0) {
     return (
@@ -540,8 +520,17 @@ function SavedScreen({
   return (
     <div className="list-screen">
       <div className="list-header">
-        <h2>Saved</h2>
-        <p>{savedActivities.length} saved thing{savedActivities.length === 1 ? "" : "s"}.</p>
+        <div>
+          <h2>Saved</h2>
+          <p>
+            {savedActivities.length} saved thing
+            {savedActivities.length === 1 ? "" : "s"}.
+          </p>
+        </div>
+
+        <button className="text-danger-button" onClick={onClearSavedActivities}>
+          Clear saved
+        </button>
       </div>
 
       {savedActivities.map((activity) => (
@@ -575,7 +564,13 @@ function SavedScreen({
   );
 }
 
-function HistoryScreen({ history }: { history: ActivityHistoryItem[] }) {
+function HistoryScreen({
+  history,
+  onClearHistory,
+}: {
+  history: ActivityHistoryItem[];
+  onClearHistory: () => void;
+}) {
   const visibleHistory = history.filter((item) => item.status !== "shown");
 
   if (visibleHistory.length === 0) {
@@ -590,8 +585,14 @@ function HistoryScreen({ history }: { history: ActivityHistoryItem[] }) {
   return (
     <div className="list-screen">
       <div className="list-header">
-        <h2>History</h2>
-        <p>Your latest activity actions on this device.</p>
+        <div>
+          <h2>History</h2>
+          <p>Your latest activity actions on this device.</p>
+        </div>
+
+        <button className="text-danger-button" onClick={onClearHistory}>
+          Clear history
+        </button>
       </div>
 
       {[...visibleHistory].reverse().slice(0, 25).map((item) => {
@@ -634,66 +635,6 @@ function formatHistoryStatus(status: ActivityHistoryItem["status"]) {
   }
 
   return "Shown";
-}
-
-function SettingsScreen({
-  onClearSavedActivities,
-  onClearHistory,
-  onResetAppData,
-}: {
-  onClearSavedActivities: () => void;
-  onClearHistory: () => void;
-  onResetAppData: () => void;
-}) {
-  return (
-    <div className="settings-screen">
-      <section className="settings-card">
-        <h2>Settings</h2>
-        <p>Manage the simple local data mtchw stores on this device.</p>
-      </section>
-
-      <section className="settings-card">
-        <h3>Local data</h3>
-        <p>
-          mtchw saves your activity history, saved activities, and last selected
-          preferences on this device only.
-        </p>
-
-        <div className="settings-actions">
-          <button
-            className="secondary-button compact"
-            onClick={onClearSavedActivities}
-          >
-            Clear saved
-          </button>
-
-          <button className="secondary-button compact" onClick={onClearHistory}>
-            Clear history
-          </button>
-
-          <button className="danger-button" onClick={onResetAppData}>
-            Reset app data
-          </button>
-        </div>
-      </section>
-
-      <section className="settings-card">
-        <h3>Privacy</h3>
-        <p>
-          This MVP does not require an account. Your saved activities and history
-          stay on your device unless you clear them.
-        </p>
-      </section>
-
-      <section className="settings-card">
-        <h3>About</h3>
-        <p>
-          mtchw is a small boredom button for moments when you want one tiny
-          thing to do instead of scrolling.
-        </p>
-      </section>
-    </div>
-  );
 }
 
 export default App;
