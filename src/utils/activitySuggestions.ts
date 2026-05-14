@@ -49,9 +49,12 @@ export function getSuggestedActivity({
   }
 
   if (matchingActivities.length > 0) {
-    return pickRandomActivity(matchingActivities);
+  if (similarToActivity) {
+    return pickRandomActivityFromTopResults(matchingActivities);
   }
 
+  return pickRandomActivity(matchingActivities);
+}
   const relaxedMatches = getRelaxedMatches({
     activities: availableActivities,
     preferences,
@@ -59,8 +62,10 @@ export function getSuggestedActivity({
   });
 
   if (similarToActivity && relaxedMatches.length > 0) {
-    return pickRandomActivity(sortBySimilarity(relaxedMatches, similarToActivity));
-  }
+  return pickRandomActivityFromTopResults(
+    sortBySimilarity(relaxedMatches, similarToActivity)
+  );
+}
 
   if (relaxedMatches.length > 0) {
     return pickRandomActivity(relaxedMatches);
@@ -233,6 +238,13 @@ function getSimilarityScore(activity: Activity, targetActivity: Activity): numbe
   }
 
   return score;
+}
+
+function pickRandomActivityFromTopResults(activities: Activity[]): Activity {
+  const topResults = activities.slice(0, Math.min(5, activities.length));
+  const randomIndex = Math.floor(Math.random() * topResults.length);
+
+  return topResults[randomIndex];
 }
 
 function pickRandomActivity(activities: Activity[]): Activity {
