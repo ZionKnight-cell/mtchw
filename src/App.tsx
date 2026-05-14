@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { ActivityCard } from "./components/ActivityCard";
 import { activities } from "./data/activities";
 import type {
@@ -12,6 +12,17 @@ import {
   createHistoryItem,
   getSuggestedActivity,
 } from "./utils/activitySuggestions";
+import {
+  clearAllMtchwData,
+  clearHistory,
+  clearSavedActivities,
+  loadHistory,
+  loadPreferences,
+  loadSavedActivityIds,
+  saveHistory,
+  savePreferences,
+  saveSavedActivityIds,
+} from "./utils/storage";
 import "./styles/app.css";
 
 type Screen = "home" | "preferences" | "activity" | "saved" | "history" | "settings";
@@ -25,12 +36,32 @@ const defaultPreferences: UserPreferences = {
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("home");
   const [currentActivity, setCurrentActivity] = useState<Activity | null>(null);
-  const [history, setHistory] = useState<ActivityHistoryItem[]>([]);
-  const [savedActivityIds, setSavedActivityIds] = useState<string[]>([]);
+
+  const [history, setHistory] = useState<ActivityHistoryItem[]>(() =>
+    loadHistory()
+  );
+
+  const [savedActivityIds, setSavedActivityIds] = useState<string[]>(() =>
+    loadSavedActivityIds()
+  );
+
   const [completionMessage, setCompletionMessage] = useState("");
   const [currentActivityDone, setCurrentActivityDone] = useState(false);
+
   const [selectedPreferences, setSelectedPreferences] =
-    useState<UserPreferences>(defaultPreferences);
+    useState<UserPreferences>(() => loadPreferences(defaultPreferences));
+
+  useEffect(() => {
+    saveHistory(history);
+  }, [history]);
+
+  useEffect(() => {
+    saveSavedActivityIds(savedActivityIds);
+  }, [savedActivityIds]);
+
+  useEffect(() => {
+    savePreferences(selectedPreferences);
+  }, [selectedPreferences]);
 
   function showActivity(options?: {
     preferencesOverride?: UserPreferences;
@@ -131,6 +162,27 @@ function App() {
     });
   }
 
+  function handleClearSavedActivities() {
+    setSavedActivityIds([]);
+    clearSavedActivities();
+  }
+
+  function handleClearHistory() {
+    setHistory([]);
+    clearHistory();
+  }
+
+  function handleResetAppData() {
+    setSavedActivityIds([]);
+    setHistory([]);
+    setSelectedPreferences(defaultPreferences);
+    setCurrentActivity(null);
+    setCompletionMessage("");
+    setCurrentActivityDone(false);
+    clearAllMtchwData();
+    setCurrentScreen("home");
+  }
+
   const savedActivities = activities.filter((activity) =>
     savedActivityIds.includes(activity.id)
   );
@@ -185,7 +237,13 @@ function App() {
 
           {currentScreen === "history" && <HistoryScreen history={history} />}
 
-          {currentScreen === "settings" && <PlaceholderScreen title="Settings" />}
+          {currentScreen === "settings" && (
+            <SettingsScreen
+              onClearSavedActivities={handleClearSavedActivities}
+              onClearHistory={handleClearHistory}
+              onResetAppData={handleResetAppData}
+            />
+          )}
         </section>
 
         <nav className="bottom-nav" aria-label="Main navigation">
@@ -247,9 +305,7 @@ function HomeScreen({
         </button>
       </div>
 
-      <div className="tiny-note">
-        No feed. No pressure. Just one tiny thing.
-      </div>
+      <div className="tiny-note">No feed. No pressure. Just one tiny thing.</div>
     </div>
   );
 }
@@ -266,8 +322,10 @@ function PreferenceScreen({
   const [energy, setEnergy] = useState<UserPreferences["energy"]>(
     initialPreferences.energy
   );
+
   const [timeAvailable, setTimeAvailable] =
     useState<UserPreferences["timeAvailable"]>(initialPreferences.timeAvailable);
+
   const [category, setCategory] = useState<ActivityCategory>(
     initialPreferences.category
   );
@@ -499,11 +557,62 @@ function HistoryScreen({ history }: { history: ActivityHistoryItem[] }) {
   );
 }
 
-function PlaceholderScreen({ title }: { title: string }) {
+function SettingsScreen({
+  onClearSavedActivities,
+  onClearHistory,
+  onResetAppData,
+}: {
+  onClearSavedActivities: () => void;
+  onClearHistory: () => void;
+  onResetAppData: () => void;
+}) {
   return (
-    <div className="placeholder-screen">
-      <h2>{title}</h2>
-      <p>This screen will be built in a later step.</p>
+    <div className="settings-screen">
+      <section className="settings-card">
+        <h2>Settings</h2>
+        <p>Manage the simple local data mtchw stores on this device.</p>
+      </section>
+
+      <section className="settings-card">
+        <h3>Local data</h3>
+        <p>
+          mtchw saves your activity history, saved activities, and last selected
+          preferences on this device only.
+        </p>
+
+        <div className="settings-actions">
+          <button
+            className="secondary-button compact"
+            onClick={onClearSavedActivities}
+          >
+            Clear saved
+          </button>
+
+          <button className="secondary-button compact" onClick={onClearHistory}>
+            Clear history
+          </button>
+
+          <button className="danger-button" onClick={onResetAppData}>
+            Reset app data
+          </button>
+        </div>
+      </section>
+
+      <section className="settings-card">
+        <h3>Privacy</h3>
+        <p>
+          This MVP does not require an account. Your saved activities and history
+          stay on your device unless you clear them.
+        </p>
+      </section>
+
+      <section className="settings-card">
+        <h3>About</h3>
+        <p>
+          mtchw is a small boredom button for moments when you want one tiny
+          thing to do instead of scrolling.
+        </p>
+      </section>
     </div>
   );
 }

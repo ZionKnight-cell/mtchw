@@ -88,7 +88,8 @@ button:disabled {
 .home-screen,
 .activity-screen,
 .list-screen,
-.preference-screen {
+.preference-screen,
+.settings-screen {
   display: grid;
   gap: 1rem;
 }
@@ -287,6 +288,51 @@ button:disabled {
   color: #ffffff;
   background: #0f766e;
   box-shadow: 0 10px 20px rgba(15, 118, 110, 0.2);
+}
+
+.settings-card {
+  background: #ffffff;
+  border: 1px solid rgba(31, 41, 51, 0.08);
+  border-radius: 1.25rem;
+  padding: 1rem;
+  box-shadow: 0 10px 25px rgba(31, 41, 51, 0.06);
+}
+
+.settings-card h2,
+.settings-card h3 {
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+
+.settings-card h2 {
+  font-size: 1.8rem;
+}
+
+.settings-card h3 {
+  font-size: 1.05rem;
+}
+
+.settings-card p {
+  margin: 0.65rem 0 0;
+  color: #52616b;
+  line-height: 1.5;
+}
+
+.settings-actions {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.danger-button {
+  width: 100%;
+  min-height: 3.3rem;
+  border: none;
+  border-radius: 999px;
+  color: #991b1b;
+  background: #fee2e2;
+  cursor: pointer;
+  font-weight: 800;
 }
 
 .bottom-nav {
