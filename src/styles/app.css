@@ -55,8 +55,11 @@ button:active:not(:disabled) {
   min-height: 100dvh;
   display: flex;
   justify-content: center;
-  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
-    max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  padding:
+    max(1rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
 }
 
 .phone-frame {
@@ -74,7 +77,10 @@ button:active:not(:disabled) {
 }
 
 .app-header {
-  padding: 1.5rem 1.25rem 1rem;
+  padding:
+    max(1.5rem, env(safe-area-inset-top))
+    1.25rem
+    1rem;
 }
 
 .eyebrow {
@@ -436,7 +442,7 @@ button:active:not(:disabled) {
   grid-template-columns: repeat(4, 1fr);
   gap: 0.4rem;
   padding: 0.85rem;
-  padding-bottom: max(0.85rem, env(safe-area-inset-bottom));
+  padding-bottom: calc(0.85rem + env(safe-area-inset-bottom));
   background: rgba(255, 252, 247, 0.96);
   border-top: 1px solid rgba(31, 41, 51, 0.08);
 }
@@ -470,11 +476,17 @@ button:active:not(:disabled) {
     border: none;
     box-shadow: none;
   }
+
+  .app-header {
+    padding-top: calc(1.25rem + env(safe-area-inset-top));
+  }
 }
 
 @media (max-width: 380px) {
   .app-header {
-    padding: 1.25rem 1rem 0.85rem;
+    padding-right: 1rem;
+    padding-bottom: 0.85rem;
+    padding-left: 1rem;
   }
 
   .screen-content {
@@ -490,8 +502,10 @@ button:active:not(:disabled) {
 
   .bottom-nav {
     gap: 0.25rem;
-    padding: 0.65rem;
-    padding-bottom: max(0.65rem, env(safe-area-inset-bottom));
+    padding-top: 0.65rem;
+    padding-right: 0.65rem;
+    padding-left: 0.65rem;
+    padding-bottom: calc(0.65rem + env(safe-area-inset-bottom));
   }
 
   .bottom-nav button {
