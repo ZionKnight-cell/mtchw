@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { ActivityCard } from "./components/ActivityCard";
 import { activities } from "./data/activities";
 import type {
@@ -366,7 +366,7 @@ function PreferenceGroup({
   children,
 }: {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <section className="preference-group">

@@ -480,4 +480,15 @@ export const activities: Activity[] = [
     moodTags: ["restless", "playful"],
     repeatable: true,
   },
+    {
+    id: "learn-teach-one-thing-001",
+    title: "Teach one thing out loud",
+    instruction: "Pick one small thing you know and explain it out loud like you are teaching someone.",
+    category: "learn",
+    energy: "high",
+    timeMinutes: 5,
+    tags: ["learning", "speaking", "memory"],
+    moodTags: ["curious", "restless"],
+    repeatable: true,
+  },
 ];
