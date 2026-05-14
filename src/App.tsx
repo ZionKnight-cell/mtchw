@@ -1,122 +1,89 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from "react";
+import "./styles/app.css";
+
+type Screen = "home" | "saved" | "history" | "settings";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentScreen, setCurrentScreen] = useState<Screen>("home");
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+    <main className="app-shell">
+      <section className="phone-frame">
+        <header className="app-header">
+          <p className="eyebrow">boredom button</p>
+          <h1>mtchw</h1>
+          <p className="tagline">One tiny thing to do when you’re bored.</p>
+        </header>
+
+        <section className="screen-content">
+          {currentScreen === "home" && <HomeScreen />}
+          {currentScreen === "saved" && <PlaceholderScreen title="Saved" />}
+          {currentScreen === "history" && <PlaceholderScreen title="History" />}
+          {currentScreen === "settings" && <PlaceholderScreen title="Settings" />}
+        </section>
+
+        <nav className="bottom-nav" aria-label="Main navigation">
+          <button
+            className={currentScreen === "home" ? "active" : ""}
+            onClick={() => setCurrentScreen("home")}
+          >
+            Home
+          </button>
+
+          <button
+            className={currentScreen === "saved" ? "active" : ""}
+            onClick={() => setCurrentScreen("saved")}
+          >
+            Saved
+          </button>
+
+          <button
+            className={currentScreen === "history" ? "active" : ""}
+            onClick={() => setCurrentScreen("history")}
+          >
+            History
+          </button>
+
+          <button
+            className={currentScreen === "settings" ? "active" : ""}
+            onClick={() => setCurrentScreen("settings")}
+          >
+            Settings
+          </button>
+        </nav>
       </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    </main>
+  );
 }
 
-export default App
+function HomeScreen() {
+  return (
+    <div className="home-screen">
+      <div className="hero-card">
+        <h2>I’m bored.</h2>
+        <p>
+          Tap the button and mtchw will give you one small thing to do. No feed,
+          no pressure, no productivity guilt.
+        </p>
+
+        <button className="primary-button">I’m bored</button>
+        <button className="secondary-button">Surprise me</button>
+      </div>
+
+      <div className="tiny-note">
+        MVP status: app shell created. Activity suggestions come next.
+      </div>
+    </div>
+  );
+}
+
+function PlaceholderScreen({ title }: { title: string }) {
+  return (
+    <div className="placeholder-screen">
+      <h2>{title}</h2>
+      <p>This screen will be built in a later step.</p>
+    </div>
+  );
+}
+
+export default App;
