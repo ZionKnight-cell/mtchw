@@ -83,10 +83,18 @@ function App() {
       return;
     }
 
-    const shownHistoryItem = createHistoryItem(suggestedActivity.id, "shown");
-    const nextHistory = [...historyForSuggestion, shownHistoryItem];
+    showSpecificActivity(suggestedActivity, historyForSuggestion);
+  }
 
-    setCurrentActivity(suggestedActivity);
+  function showSpecificActivity(
+    activity: Activity,
+    historyOverride?: ActivityHistoryItem[]
+  ) {
+    const historyForUpdate = historyOverride ?? history;
+    const shownHistoryItem = createHistoryItem(activity.id, "shown");
+    const nextHistory = [...historyForUpdate, shownHistoryItem];
+
+    setCurrentActivity(activity);
     setHistory(nextHistory);
     setCompletionMessage("");
     setCurrentActivityDone(false);
@@ -162,6 +170,16 @@ function App() {
     });
   }
 
+  function handleTrySavedActivity(activity: Activity) {
+    showSpecificActivity(activity);
+  }
+
+  function handleRemoveSavedActivity(activityId: string) {
+    setSavedActivityIds((currentSavedIds) =>
+      currentSavedIds.filter((savedActivityId) => savedActivityId !== activityId)
+    );
+  }
+
   function handleClearSavedActivities() {
     setSavedActivityIds([]);
     clearSavedActivities();
@@ -232,7 +250,11 @@ function App() {
           )}
 
           {currentScreen === "saved" && (
-            <SavedScreen savedActivities={savedActivities} />
+            <SavedScreen
+              savedActivities={savedActivities}
+              onTryActivity={handleTrySavedActivity}
+              onRemoveActivity={handleRemoveSavedActivity}
+            />
           )}
 
           {currentScreen === "history" && <HistoryScreen history={history} />}
@@ -497,7 +519,15 @@ function ActivityScreen({
   );
 }
 
-function SavedScreen({ savedActivities }: { savedActivities: Activity[] }) {
+function SavedScreen({
+  savedActivities,
+  onTryActivity,
+  onRemoveActivity,
+}: {
+  savedActivities: Activity[];
+  onTryActivity: (activity: Activity) => void;
+  onRemoveActivity: (activityId: string) => void;
+}) {
   if (savedActivities.length === 0) {
     return (
       <div className="placeholder-screen">
@@ -509,15 +539,36 @@ function SavedScreen({ savedActivities }: { savedActivities: Activity[] }) {
 
   return (
     <div className="list-screen">
-      <h2>Saved</h2>
+      <div className="list-header">
+        <h2>Saved</h2>
+        <p>{savedActivities.length} saved thing{savedActivities.length === 1 ? "" : "s"}.</p>
+      </div>
 
       {savedActivities.map((activity) => (
         <article className="mini-card" key={activity.id}>
+          <div className="mini-card-meta">
+            <span>{activity.category}</span>
+            <span>{activity.timeMinutes} min</span>
+          </div>
+
           <h3>{activity.title}</h3>
           <p>{activity.instruction}</p>
-          <span>
-            {activity.category} • {activity.timeMinutes} min
-          </span>
+
+          <div className="mini-card-actions">
+            <button
+              className="secondary-button compact"
+              onClick={() => onTryActivity(activity)}
+            >
+              Try now
+            </button>
+
+            <button
+              className="subtle-danger-button"
+              onClick={() => onRemoveActivity(activity.id)}
+            >
+              Remove
+            </button>
+          </div>
         </article>
       ))}
     </div>
@@ -538,23 +589,51 @@ function HistoryScreen({ history }: { history: ActivityHistoryItem[] }) {
 
   return (
     <div className="list-screen">
-      <h2>History</h2>
+      <div className="list-header">
+        <h2>History</h2>
+        <p>Your latest activity actions on this device.</p>
+      </div>
 
-      {[...visibleHistory].reverse().slice(0, 20).map((item) => {
+      {[...visibleHistory].reverse().slice(0, 25).map((item) => {
         const activity = activities.find(
           (activityItem) => activityItem.id === item.activityId
         );
 
         return (
           <article className="mini-card" key={item.id}>
+            <div className="history-row">
+              <span className={`status-pill status-${item.status}`}>
+                {formatHistoryStatus(item.status)}
+              </span>
+
+              <span className="history-date">
+                {new Date(item.createdAt).toLocaleString()}
+              </span>
+            </div>
+
             <h3>{activity?.title ?? "Unknown activity"}</h3>
-            <p>Status: {item.status}</p>
-            <span>{new Date(item.createdAt).toLocaleString()}</span>
+            <p>{activity?.instruction ?? "This activity is no longer available."}</p>
           </article>
         );
       })}
     </div>
   );
+}
+
+function formatHistoryStatus(status: ActivityHistoryItem["status"]) {
+  if (status === "done") {
+    return "Done";
+  }
+
+  if (status === "skipped") {
+    return "Skipped";
+  }
+
+  if (status === "saved") {
+    return "Saved";
+  }
+
+  return "Shown";
 }
 
 function SettingsScreen({

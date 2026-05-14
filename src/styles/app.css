@@ -192,14 +192,20 @@ button:disabled {
   margin-bottom: 1rem;
 }
 
-.activity-meta span {
+.activity-meta span,
+.mini-card-meta span,
+.status-pill {
   padding: 0.4rem 0.65rem;
   border-radius: 999px;
-  color: #0f766e;
-  background: #d9f3ee;
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: capitalize;
+}
+
+.activity-meta span,
+.mini-card-meta span {
+  color: #0f766e;
+  background: #d9f3ee;
 }
 
 .activity-actions {
@@ -208,7 +214,8 @@ button:disabled {
 }
 
 .secondary-action-grid,
-.completion-actions {
+.completion-actions,
+.mini-card-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
@@ -226,6 +233,20 @@ button:disabled {
   margin: 0 0 0.75rem;
 }
 
+.list-header {
+  background: #ffffff;
+  border: 1px solid rgba(31, 41, 51, 0.08);
+  border-radius: 1.25rem;
+  padding: 1rem;
+  box-shadow: 0 10px 25px rgba(31, 41, 51, 0.06);
+}
+
+.list-header p {
+  margin: 0.45rem 0 0;
+  color: #52616b;
+  line-height: 1.45;
+}
+
 .mini-card {
   background: #ffffff;
   border: 1px solid rgba(31, 41, 51, 0.08);
@@ -234,20 +255,72 @@ button:disabled {
   box-shadow: 0 10px 25px rgba(31, 41, 51, 0.06);
 }
 
+.mini-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
+}
+
 .mini-card h3 {
   margin: 0;
   font-size: 1rem;
 }
 
 .mini-card p {
-  margin: 0.5rem 0;
+  margin: 0.5rem 0 1rem;
   color: #52616b;
   line-height: 1.45;
 }
 
-.mini-card span {
+.mini-card-actions {
+  margin-top: 0.85rem;
+}
+
+.subtle-danger-button {
+  width: 100%;
+  min-height: 3.3rem;
+  border: none;
+  border-radius: 999px;
+  color: #991b1b;
+  background: #fee2e2;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.history-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.status-done {
+  color: #0f5132;
+  background: #d1fae5;
+}
+
+.status-skipped {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.status-saved {
+  color: #1e3a8a;
+  background: #dbeafe;
+}
+
+.status-shown {
+  color: #52616b;
+  background: #e5e7eb;
+}
+
+.history-date {
   color: #697586;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
 .preference-header h2 {
