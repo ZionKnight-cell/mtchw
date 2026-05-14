@@ -320,6 +320,12 @@ function HomeScreen({
       </div>
 
       <div className="tiny-note">No feed. No pressure. Just one tiny thing.</div>
+
+      <div className="privacy-link-row">
+        <a className="privacy-link" href="/privacy.html">
+          Privacy Policy
+        </a>
+      </div>
     </div>
   );
 }

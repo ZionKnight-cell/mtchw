@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+
+    <title>Privacy Policy — mtchw</title>
+
+    <meta
+      name="description"
+      content="Privacy Policy for mtchw, a simple boredom-button app that stores saved activities and history locally on your device."
+    />
+
+    <meta
+      name="theme-color"
+      content="#eaf5ff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#061224"
+      media="(prefers-color-scheme: dark)"
+    />
+
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <style>
+      :root {
+        color-scheme: light dark;
+
+        --app-bg: #eaf5ff;
+        --app-bg-bottom: #f9fcff;
+        --card: rgba(255, 255, 255, 0.92);
+        --text: #071d49;
+        --muted: #36547a;
+        --border: rgba(7, 29, 73, 0.12);
+        --primary: #0b72ff;
+        --primary-strong: #0057e7;
+
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        color: var(--text);
+        background: var(--app-bg);
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --app-bg: #071933;
+          --app-bg-bottom: #020a18;
+          --card: rgba(12, 31, 58, 0.9);
+          --text: #f3f9ff;
+          --muted: #c0d2e8;
+          --border: rgba(202, 229, 255, 0.14);
+          --primary: #1598ff;
+          --primary-strong: #6bc2ff;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-width: 320px;
+        min-height: 100%;
+        background: var(--app-bg);
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        min-height: 100vh;
+        min-height: 100dvh;
+        color: var(--text);
+        background:
+          radial-gradient(
+            circle at 50% 5%,
+            rgba(47, 183, 255, 0.35),
+            transparent 21rem
+          ),
+          linear-gradient(180deg, var(--app-bg), var(--app-bg-bottom));
+      }
+
+      a {
+        color: var(--primary-strong);
+        font-weight: 800;
+      }
+
+      .page {
+        width: min(100%, 760px);
+        margin: 0 auto;
+        padding: 2rem 1rem 4rem;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        margin-bottom: 1rem;
+      }
+
+      .logo {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.85rem;
+        box-shadow: 0 10px 24px rgba(7, 93, 245, 0.25);
+      }
+
+      .brand {
+        margin: 0;
+        color: var(--primary-strong);
+        font-size: 2.2rem;
+        line-height: 0.9;
+        letter-spacing: -0.07em;
+      }
+
+      .tagline {
+        margin: 0.3rem 0 0;
+        color: var(--muted);
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 1.5rem;
+        padding: 1.25rem;
+        box-shadow: 0 18px 40px rgba(7, 29, 73, 0.1);
+        backdrop-filter: blur(18px);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 10vw, 3rem);
+        line-height: 1;
+        letter-spacing: -0.06em;
+      }
+
+      h2 {
+        margin: 2rem 0 0.65rem;
+        font-size: 1.25rem;
+        letter-spacing: -0.03em;
+      }
+
+      p,
+      li {
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      ul {
+        padding-left: 1.25rem;
+      }
+
+      .updated {
+        margin: 0.75rem 0 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .back-link {
+        display: inline-flex;
+        margin-top: 1rem;
+        text-decoration: none;
+      }
+
+      .notice {
+        margin-top: 1.25rem;
+        padding: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        background: rgba(21, 152, 255, 0.08);
+      }
+
+      @media (max-width: 430px) {
+        .page {
+          padding-top: calc(1rem + env(safe-area-inset-top));
+          padding-right: 1rem;
+          padding-left: 1rem;
+        }
+
+        .card {
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="page">
+      <header class="header">
+        <img class="logo" src="/mtchw-icon-192.png" alt="" aria-hidden="true" />
+
+        <div>
+          <p class="brand">mtchw</p>
+          <p class="tagline">Tiny ideas for bored moments.</p>
+        </div>
+      </header>
+
+      <section class="card">
+        <h1>Privacy Policy</h1>
+        <p class="updated">Last updated: May 14, 2026</p>
+
+        <p>
+          mtchw is a simple boredom-button app that gives you one small activity
+          to do when you are bored. This policy explains what data the app uses
+          and how it is stored.
+        </p>
+
+        <h2>1. Information mtchw collects</h2>
+        <p>
+          The current version of mtchw does not require an account, login,
+          email address, phone number, name, profile, or cloud sync.
+        </p>
+
+        <p>
+          mtchw does not collect personal information through the app in this
+          MVP version.
+        </p>
+
+        <h2>2. Information stored on your device</h2>
+        <p>
+          mtchw stores a small amount of app data locally on your device so the
+          app can remember your experience.
+        </p>
+
+        <p>This local app data may include:</p>
+
+        <ul>
+          <li>Saved activities</li>
+          <li>Activity history</li>
+          <li>Your last selected activity preferences</li>
+        </ul>
+
+        <p>
+          This information stays on your device. It is not sent to a mtchw
+          server because the MVP does not use a backend server or account system.
+        </p>
+
+        <h2>3. How the data is used</h2>
+        <p>Local app data is used only to:</p>
+
+        <ul>
+          <li>Show your saved activities</li>
+          <li>Show your activity history</li>
+          <li>Remember your last selected energy, time, and category choices</li>
+          <li>Help avoid showing the same activities too often</li>
+        </ul>
+
+        <h2>4. Clearing your data</h2>
+        <p>
+          You can clear saved activities from the Saved tab. You can clear
+          activity history from the History tab.
+        </p>
+
+        <p>
+          You can also uninstall the app to remove the app and its local data
+          from your device.
+        </p>
+
+        <h2>5. Data sharing</h2>
+        <p>
+          mtchw does not sell your data. mtchw does not share your saved
+          activities, history, or preferences with advertisers or social media
+          platforms.
+        </p>
+
+        <h2>6. Analytics and ads</h2>
+        <p>
+          The current MVP version of mtchw does not include advertising,
+          third-party analytics, user tracking, subscriptions, payments, chat,
+          social feeds, or user accounts.
+        </p>
+
+        <h2>7. Website hosting note</h2>
+        <p>
+          The public web version of mtchw may be served through a hosting
+          provider. Hosting providers may process basic technical information
+          needed to serve the website, such as request logs. mtchw does not use
+          this information to create personal profiles.
+        </p>
+
+        <h2>8. Children</h2>
+        <p>
+          mtchw is a general-audience app. It is not designed to collect
+          information from children.
+        </p>
+
+        <h2>9. Changes to this policy</h2>
+        <p>
+          This privacy policy may be updated if mtchw adds new features such as
+          accounts, cloud sync, analytics, or optional online services.
+        </p>
+
+        <h2>10. Contact</h2>
+        <p>
+          Before publishing on Google Play, replace this line with your real
+          support email address.
+        </p>
+
+        <div class="notice">
+          <p>
+            Developer note: this is a practical starter privacy policy for the
+            current MVP. Review it before publishing and update it if the app
+            adds analytics, ads, accounts, cloud sync, AI features, or any
+            third-party SDKs.
+          </p>
+        </div>
+
+        <a class="back-link" href="/">← Back to mtchw</a>
+      </section>
+    </main>
+  </body>
+</html>
