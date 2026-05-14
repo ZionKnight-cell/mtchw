@@ -31,7 +31,11 @@ export function getSuggestedActivity({
 
   const recentlyShownIds = getRecentlyShownActivityIds(history);
 
-  let matchingActivities = activities.filter((activity) =>
+  const availableActivities = activities.filter(
+    (activity) => activity.id !== similarToActivityId
+  );
+
+  let matchingActivities = availableActivities.filter((activity) =>
     activityMatchesPreferences(activity, preferences)
   );
 
@@ -45,26 +49,24 @@ export function getSuggestedActivity({
   }
 
   if (matchingActivities.length > 0) {
-    return pickRandomActivityFromTopResults(matchingActivities);
+    return pickRandomActivity(matchingActivities);
   }
 
   const relaxedMatches = getRelaxedMatches({
-    activities,
+    activities: availableActivities,
     preferences,
     recentlyShownIds,
   });
 
   if (similarToActivity && relaxedMatches.length > 0) {
-    return pickRandomActivityFromTopResults(
-      sortBySimilarity(relaxedMatches, similarToActivity)
-    );
+    return pickRandomActivity(sortBySimilarity(relaxedMatches, similarToActivity));
   }
 
   if (relaxedMatches.length > 0) {
-    return pickRandomActivityFromTopResults(relaxedMatches);
+    return pickRandomActivity(relaxedMatches);
   }
 
-  return pickRandomActivityFromTopResults(activities);
+  return pickRandomActivity(availableActivities.length > 0 ? availableActivities : activities);
 }
 
 export function activityMatchesPreferences(
@@ -88,7 +90,12 @@ export function getRecentlyShownActivityIds(
   history: ActivityHistoryItem[]
 ): string[] {
   return history
-    .filter((item) => item.status === "shown" || item.status === "done")
+    .filter(
+      (item) =>
+        item.status === "shown" ||
+        item.status === "done" ||
+        item.status === "skipped"
+    )
     .slice(-RECENT_ACTIVITY_LIMIT)
     .map((item) => item.activityId);
 }
@@ -109,7 +116,9 @@ export function createHistoryItem(
   status: ActivityHistoryItem["status"]
 ): ActivityHistoryItem {
   return {
-    id: `${activityId}-${status}-${Date.now()}`,
+    id: `${activityId}-${status}-${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2)}`,
     activityId,
     status,
     createdAt: new Date().toISOString(),
@@ -207,7 +216,7 @@ function getSimilarityScore(activity: Activity, targetActivity: Activity): numbe
     score += 2;
   }
 
-  if (activity.timeMinutes <= targetActivity.timeMinutes + 2) {
+  if (Math.abs(activity.timeMinutes - targetActivity.timeMinutes) <= 2) {
     score += 1;
   }
 
@@ -226,9 +235,8 @@ function getSimilarityScore(activity: Activity, targetActivity: Activity): numbe
   return score;
 }
 
-function pickRandomActivityFromTopResults(activities: Activity[]): Activity {
-  const topResults = activities.slice(0, Math.min(5, activities.length));
-  const randomIndex = Math.floor(Math.random() * topResults.length);
+function pickRandomActivity(activities: Activity[]): Activity {
+  const randomIndex = Math.floor(Math.random() * activities.length);
 
-  return topResults[randomIndex];
+  return activities[randomIndex];
 }

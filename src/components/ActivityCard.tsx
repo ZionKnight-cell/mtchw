@@ -7,6 +7,7 @@ type ActivityCardProps = {
   onSave: () => void;
   onMoreLikeThis: () => void;
   isSaved: boolean;
+  isDone: boolean;
 };
 
 export function ActivityCard({
@@ -16,6 +17,7 @@ export function ActivityCard({
   onSave,
   onMoreLikeThis,
   isSaved,
+  isDone,
 }: ActivityCardProps) {
   return (
     <article className="activity-card">
@@ -30,8 +32,12 @@ export function ActivityCard({
       <p>{activity.instruction}</p>
 
       <div className="activity-actions">
-        <button className="primary-button" onClick={onDone}>
-          Done
+        <button
+          className="primary-button"
+          onClick={onDone}
+          disabled={isDone}
+        >
+          {isDone ? "Done ✓" : "Done"}
         </button>
 
         <div className="secondary-action-grid">
@@ -39,8 +45,12 @@ export function ActivityCard({
             Skip
           </button>
 
-          <button className="secondary-button compact" onClick={onSave}>
-            {isSaved ? "Saved" : "Save"}
+          <button
+            className="secondary-button compact"
+            onClick={onSave}
+            disabled={isSaved}
+          >
+            {isSaved ? "Saved ✓" : "Save"}
           </button>
         </div>
 

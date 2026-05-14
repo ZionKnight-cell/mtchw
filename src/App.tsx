@@ -22,30 +22,37 @@ function App() {
   const [history, setHistory] = useState<ActivityHistoryItem[]>([]);
   const [savedActivityIds, setSavedActivityIds] = useState<string[]>([]);
   const [completionMessage, setCompletionMessage] = useState("");
+  const [currentActivityDone, setCurrentActivityDone] = useState(false);
 
-  function showActivity(similarToActivityId?: string) {
+  function showActivity(options?: {
+    similarToActivityId?: string;
+    historyOverride?: ActivityHistoryItem[];
+  }) {
+    const historyForSuggestion = options?.historyOverride ?? history;
+
     const suggestedActivity = getSuggestedActivity({
       activities,
       preferences: defaultPreferences,
-      history,
-      similarToActivityId,
+      history: historyForSuggestion,
+      similarToActivityId: options?.similarToActivityId,
     });
 
     if (!suggestedActivity) {
       return;
     }
 
+    const shownHistoryItem = createHistoryItem(suggestedActivity.id, "shown");
+    const nextHistory = [...historyForSuggestion, shownHistoryItem];
+
     setCurrentActivity(suggestedActivity);
-    setHistory((currentHistory) => [
-      ...currentHistory,
-      createHistoryItem(suggestedActivity.id, "shown"),
-    ]);
+    setHistory(nextHistory);
     setCompletionMessage("");
+    setCurrentActivityDone(false);
     setCurrentScreen("activity");
   }
 
   function handleDone() {
-    if (!currentActivity) {
+    if (!currentActivity || currentActivityDone) {
       return;
     }
 
@@ -54,6 +61,7 @@ function App() {
       createHistoryItem(currentActivity.id, "done"),
     ]);
 
+    setCurrentActivityDone(true);
     setCompletionMessage("Nice. Tiny thing done.");
   }
 
@@ -62,26 +70,25 @@ function App() {
       return;
     }
 
-    setHistory((currentHistory) => [
-      ...currentHistory,
-      createHistoryItem(currentActivity.id, "skipped"),
-    ]);
+    const skippedHistoryItem = createHistoryItem(currentActivity.id, "skipped");
+    const nextHistory = [...history, skippedHistoryItem];
 
-    showActivity();
+    setHistory(nextHistory);
+
+    showActivity({
+      historyOverride: nextHistory,
+    });
   }
 
   function handleSave() {
-    if (!currentActivity) {
+    if (!currentActivity || savedActivityIds.includes(currentActivity.id)) {
       return;
     }
 
-    setSavedActivityIds((currentSavedIds) => {
-      if (currentSavedIds.includes(currentActivity.id)) {
-        return currentSavedIds;
-      }
-
-      return [...currentSavedIds, currentActivity.id];
-    });
+    setSavedActivityIds((currentSavedIds) => [
+      ...currentSavedIds,
+      currentActivity.id,
+    ]);
 
     setHistory((currentHistory) => [
       ...currentHistory,
@@ -94,7 +101,9 @@ function App() {
       return;
     }
 
-    showActivity(currentActivity.id);
+    showActivity({
+      similarToActivityId: currentActivity.id,
+    });
   }
 
   const savedActivities = activities.filter((activity) =>
@@ -122,10 +131,13 @@ function App() {
                   ? savedActivityIds.includes(currentActivity.id)
                   : false
               }
+              isDone={currentActivityDone}
               onDone={handleDone}
               onSkip={handleSkip}
               onSave={handleSave}
               onMoreLikeThis={handleMoreLikeThis}
+              onGoHome={() => setCurrentScreen("home")}
+              onTryAnother={() => showActivity()}
             />
           )}
 
@@ -192,7 +204,7 @@ function HomeScreen({ onStart }: { onStart: () => void }) {
       </div>
 
       <div className="tiny-note">
-        MVP status: real activity suggestions are now connected.
+        MVP status: real activity suggestions are connected.
       </div>
     </div>
   );
@@ -202,18 +214,24 @@ function ActivityScreen({
   activity,
   completionMessage,
   isSaved,
+  isDone,
   onDone,
   onSkip,
   onSave,
   onMoreLikeThis,
+  onGoHome,
+  onTryAnother,
 }: {
   activity: Activity | null;
   completionMessage: string;
   isSaved: boolean;
+  isDone: boolean;
   onDone: () => void;
   onSkip: () => void;
   onSave: () => void;
   onMoreLikeThis: () => void;
+  onGoHome: () => void;
+  onTryAnother: () => void;
 }) {
   if (!activity) {
     return (
@@ -227,7 +245,19 @@ function ActivityScreen({
   return (
     <div className="activity-screen">
       {completionMessage && (
-        <div className="completion-message">{completionMessage}</div>
+        <div className="completion-message">
+          <p>{completionMessage}</p>
+
+          <div className="completion-actions">
+            <button className="secondary-button compact" onClick={onGoHome}>
+              Back home
+            </button>
+
+            <button className="secondary-button compact" onClick={onTryAnother}>
+              Another thing
+            </button>
+          </div>
+        </div>
       )}
 
       <ActivityCard
@@ -237,6 +267,7 @@ function ActivityScreen({
         onSave={onSave}
         onMoreLikeThis={onMoreLikeThis}
         isSaved={isSaved}
+        isDone={isDone}
       />
     </div>
   );
@@ -270,11 +301,13 @@ function SavedScreen({ savedActivities }: { savedActivities: Activity[] }) {
 }
 
 function HistoryScreen({ history }: { history: ActivityHistoryItem[] }) {
-  if (history.length === 0) {
+  const visibleHistory = history.filter((item) => item.status !== "shown");
+
+  if (visibleHistory.length === 0) {
     return (
       <div className="placeholder-screen">
         <h2>History</h2>
-        <p>No history yet. Tap “I’m bored” and try your first thing.</p>
+        <p>No completed, skipped, or saved activities yet.</p>
       </div>
     );
   }
@@ -283,7 +316,7 @@ function HistoryScreen({ history }: { history: ActivityHistoryItem[] }) {
     <div className="list-screen">
       <h2>History</h2>
 
-      {[...history].reverse().slice(0, 20).map((item) => {
+      {[...visibleHistory].reverse().slice(0, 20).map((item) => {
         const activity = activities.find(
           (activityItem) => activityItem.id === item.activityId
         );
