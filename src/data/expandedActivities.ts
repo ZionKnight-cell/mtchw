@@ -1,4 +1,9 @@
-import type { Activity, ActivityCategory, EnergyLevel, MoodTag } from "../types/activity";
+import type {
+  Activity,
+  ActivityCategory,
+  EnergyLevel,
+  MoodTag,
+} from "../types/activity";
 
 type ActivityBlueprint = {
   title: string;
@@ -500,10 +505,18 @@ const highEnergyBlueprints: ActivityBlueprint[] = [
 
 const variationPhrases = [
   "Keep it simple and stop when it feels done.",
-  "Do not overthink it. This is only a tiny action.",
+  "Do the easiest version of it.",
   "Make it quick, light, and low-pressure.",
   "Try it once, then move on.",
   "You only need to start, not perfect it.",
+];
+
+const titleSuffixes = [
+  "",
+  " — easy version",
+  " — tiny version",
+  " — quick round",
+  " — low-pressure round",
 ];
 
 function createExpandedActivities(
@@ -515,15 +528,13 @@ function createExpandedActivities(
 
   for (let index = 0; index < targetCount; index += 1) {
     const blueprint = blueprints[index % blueprints.length];
-    const variationNumber = Math.floor(index / blueprints.length) + 1;
-    const variationPhrase = variationPhrases[index % variationPhrases.length];
+    const variationIndex = Math.floor(index / blueprints.length);
+    const variationPhrase = variationPhrases[variationIndex % variationPhrases.length];
+    const titleSuffix = titleSuffixes[variationIndex % titleSuffixes.length];
 
     expandedActivities.push({
       id: `expanded-${energy}-${blueprint.category}-${index + 1}`,
-      title:
-        variationNumber === 1
-          ? blueprint.title
-          : `${blueprint.title} ${variationNumber}`,
+      title: `${blueprint.title}${titleSuffix}`,
       instruction: `${blueprint.instruction} ${variationPhrase}`,
       category: blueprint.category,
       energy,
