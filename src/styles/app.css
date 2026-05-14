@@ -1,100 +1,9 @@
-:root {
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
-  color: #1f2933;
-  background: #f7f1e8;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at top left, rgba(255, 211, 105, 0.35), transparent 32rem),
-    #f7f1e8;
-}
-
-button {
-  font: inherit;
-}
-
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.65;
-}
-
-.app-shell {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  padding: 1rem;
-}
-
-.phone-frame {
-  width: 100%;
-  max-width: 430px;
-  min-height: calc(100vh - 2rem);
-  display: flex;
-  flex-direction: column;
-  background: rgba(255, 252, 247, 0.92);
-  border: 1px solid rgba(31, 41, 51, 0.08);
-  border-radius: 2rem;
-  box-shadow: 0 24px 70px rgba(31, 41, 51, 0.12);
-  overflow: hidden;
-}
-
-.app-header {
-  padding: 1.5rem 1.25rem 1rem;
-}
-
-.eyebrow {
-  margin: 0 0 0.35rem;
-  color: #0f766e;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.app-header h1 {
-  margin: 0;
-  font-size: clamp(2.2rem, 12vw, 3.75rem);
-  line-height: 0.9;
-  letter-spacing: -0.08em;
-}
-
-.tagline {
-  max-width: 16rem;
-  margin: 0.75rem 0 0;
-  color: #52616b;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.screen-content {
-  flex: 1;
-  padding: 0 1.25rem 1rem;
-  overflow-y: auto;
-}
-
-.home-screen,
-.activity-screen,
-.list-screen {
+.preference-screen {
   display: grid;
   gap: 1rem;
 }
 
-.hero-card,
-.placeholder-screen,
-.activity-card {
+.preference-header {
   background: #ffffff;
   border: 1px solid rgba(31, 41, 51, 0.08);
   border-radius: 1.5rem;
@@ -102,177 +11,59 @@ button:disabled {
   box-shadow: 0 16px 35px rgba(31, 41, 51, 0.08);
 }
 
-.hero-card h2,
-.placeholder-screen h2,
-.activity-card h2,
-.list-screen h2 {
-  margin: 0;
+.preference-header h2 {
+  margin: 0.75rem 0 0;
   font-size: 1.8rem;
   letter-spacing: -0.04em;
 }
 
-.hero-card p,
-.placeholder-screen p,
-.activity-card p {
-  margin: 0.75rem 0 1.25rem;
+.preference-header p {
+  margin: 0.75rem 0 0;
   color: #52616b;
   line-height: 1.55;
 }
 
-.activity-card p {
-  font-size: 1.05rem;
-}
-
-.primary-button,
-.secondary-button {
-  width: 100%;
-  min-height: 3.3rem;
-  border-radius: 999px;
+.text-button {
   border: none;
-  cursor: pointer;
-  font-weight: 800;
-}
-
-.primary-button {
-  color: #ffffff;
-  background: #0f766e;
-  box-shadow: 0 12px 24px rgba(15, 118, 110, 0.25);
-}
-
-.secondary-button {
-  margin-top: 0.75rem;
-  color: #0f766e;
-  background: #d9f3ee;
-}
-
-.secondary-button.compact {
-  margin-top: 0;
-}
-
-.ghost-button {
-  width: 100%;
-  min-height: 3rem;
-  border: 1px solid rgba(15, 118, 110, 0.25);
-  border-radius: 999px;
+  padding: 0;
   color: #0f766e;
   background: transparent;
+  font-weight: 800;
   cursor: pointer;
-  font-weight: 800;
 }
 
-.tiny-note {
-  padding: 0 0.35rem;
-  color: #697586;
-  font-size: 0.9rem;
-  line-height: 1.45;
-}
-
-.activity-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-bottom: 1rem;
-}
-
-.activity-meta span {
-  padding: 0.4rem 0.65rem;
-  border-radius: 999px;
-  color: #0f766e;
-  background: #d9f3ee;
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: capitalize;
-}
-
-.activity-actions {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.secondary-action-grid,
-.completion-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-}
-
-.completion-message {
-  padding: 0.9rem 1rem;
-  border-radius: 1rem;
-  color: #0f5132;
-  background: #d1fae5;
-  font-weight: 800;
-}
-
-.completion-message p {
-  margin: 0 0 0.75rem;
-}
-
-.mini-card {
+.preference-group {
   background: #ffffff;
   border: 1px solid rgba(31, 41, 51, 0.08);
-  border-radius: 1.2rem;
+  border-radius: 1.25rem;
   padding: 1rem;
-  box-shadow: 0 10px 25px rgba(31, 41, 51, 0.06);
 }
 
-.mini-card h3 {
-  margin: 0;
-  font-size: 1rem;
-}
-
-.mini-card p {
-  margin: 0.5rem 0;
+.preference-group h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
   color: #52616b;
-  line-height: 1.45;
 }
 
-.mini-card span {
-  color: #697586;
-  font-size: 0.82rem;
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-.bottom-nav {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.4rem;
-  padding: 0.85rem;
-  background: rgba(255, 252, 247, 0.94);
-  border-top: 1px solid rgba(31, 41, 51, 0.08);
-}
-
-.bottom-nav button {
+.chip {
   min-height: 2.75rem;
-  border: none;
+  border: 1px solid rgba(15, 118, 110, 0.18);
   border-radius: 999px;
-  color: #52616b;
-  background: transparent;
-  font-size: 0.82rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.bottom-nav button.active {
+  padding: 0 0.9rem;
   color: #0f766e;
-  background: #d9f3ee;
+  background: #f0fdfa;
+  cursor: pointer;
+  font-weight: 800;
 }
 
-@media (max-width: 380px) {
-  .app-shell {
-    padding: 0;
-  }
-
-  .phone-frame {
-    min-height: 100vh;
-    border-radius: 0;
-  }
-
-  .bottom-nav {
-    gap: 0.25rem;
-    padding: 0.65rem;
-  }
-
-  .bottom-nav button {
-    font-size: 0.76rem;
-  }
+.chip.selected {
+  color: #ffffff;
+  background: #0f766e;
+  box-shadow: 0 10px 20px rgba(15, 118, 110, 0.2);
 }

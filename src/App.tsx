@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { ActivityCard } from "./components/ActivityCard";
 import { activities } from "./data/activities";
-import type { Activity, ActivityHistoryItem, UserPreferences } from "./types/activity";
+import type {
+  Activity,
+  ActivityCategory,
+  ActivityHistoryItem,
+  EnergyLevel,
+  UserPreferences,
+} from "./types/activity";
 import {
   createHistoryItem,
   getSuggestedActivity,
 } from "./utils/activitySuggestions";
 import "./styles/app.css";
 
-type Screen = "home" | "activity" | "saved" | "history" | "settings";
+type Screen = "home" | "preferences" | "activity" | "saved" | "history" | "settings";
 
 const defaultPreferences: UserPreferences = {
   energy: "surprise",
@@ -23,16 +29,21 @@ function App() {
   const [savedActivityIds, setSavedActivityIds] = useState<string[]>([]);
   const [completionMessage, setCompletionMessage] = useState("");
   const [currentActivityDone, setCurrentActivityDone] = useState(false);
+  const [selectedPreferences, setSelectedPreferences] =
+    useState<UserPreferences>(defaultPreferences);
 
   function showActivity(options?: {
+    preferencesOverride?: UserPreferences;
     similarToActivityId?: string;
     historyOverride?: ActivityHistoryItem[];
   }) {
     const historyForSuggestion = options?.historyOverride ?? history;
+    const preferencesForSuggestion =
+      options?.preferencesOverride ?? selectedPreferences;
 
     const suggestedActivity = getSuggestedActivity({
       activities,
-      preferences: defaultPreferences,
+      preferences: preferencesForSuggestion,
       history: historyForSuggestion,
       similarToActivityId: options?.similarToActivityId,
     });
@@ -49,6 +60,22 @@ function App() {
     setCompletionMessage("");
     setCurrentActivityDone(false);
     setCurrentScreen("activity");
+  }
+
+  function handlePreferenceSubmit(preferences: UserPreferences) {
+    setSelectedPreferences(preferences);
+
+    showActivity({
+      preferencesOverride: preferences,
+    });
+  }
+
+  function handleSurpriseMe() {
+    setSelectedPreferences(defaultPreferences);
+
+    showActivity({
+      preferencesOverride: defaultPreferences,
+    });
   }
 
   function handleDone() {
@@ -72,8 +99,6 @@ function App() {
 
     const skippedHistoryItem = createHistoryItem(currentActivity.id, "skipped");
     const nextHistory = [...history, skippedHistoryItem];
-
-    setHistory(nextHistory);
 
     showActivity({
       historyOverride: nextHistory,
@@ -120,7 +145,20 @@ function App() {
         </header>
 
         <section className="screen-content">
-          {currentScreen === "home" && <HomeScreen onStart={() => showActivity()} />}
+          {currentScreen === "home" && (
+            <HomeScreen
+              onStart={() => setCurrentScreen("preferences")}
+              onSurpriseMe={handleSurpriseMe}
+            />
+          )}
+
+          {currentScreen === "preferences" && (
+            <PreferenceScreen
+              initialPreferences={selectedPreferences}
+              onBack={() => setCurrentScreen("home")}
+              onSubmit={handlePreferenceSubmit}
+            />
+          )}
 
           {currentScreen === "activity" && (
             <ActivityScreen
@@ -184,29 +222,157 @@ function App() {
   );
 }
 
-function HomeScreen({ onStart }: { onStart: () => void }) {
+function HomeScreen({
+  onStart,
+  onSurpriseMe,
+}: {
+  onStart: () => void;
+  onSurpriseMe: () => void;
+}) {
   return (
     <div className="home-screen">
       <div className="hero-card">
         <h2>I’m bored.</h2>
         <p>
-          Tap the button and mtchw will give you one small thing to do. No feed,
-          no pressure, no productivity guilt.
+          Pick your energy, time, and mood for the moment. mtchw will give you
+          one small thing to do.
         </p>
 
         <button className="primary-button" onClick={onStart}>
           I’m bored
         </button>
 
-        <button className="secondary-button" onClick={onStart}>
+        <button className="secondary-button" onClick={onSurpriseMe}>
           Surprise me
         </button>
       </div>
 
       <div className="tiny-note">
-        MVP status: real activity suggestions are connected.
+        No feed. No pressure. Just one tiny thing.
       </div>
     </div>
+  );
+}
+
+function PreferenceScreen({
+  initialPreferences,
+  onBack,
+  onSubmit,
+}: {
+  initialPreferences: UserPreferences;
+  onBack: () => void;
+  onSubmit: (preferences: UserPreferences) => void;
+}) {
+  const [energy, setEnergy] = useState<UserPreferences["energy"]>(
+    initialPreferences.energy
+  );
+  const [timeAvailable, setTimeAvailable] =
+    useState<UserPreferences["timeAvailable"]>(initialPreferences.timeAvailable);
+  const [category, setCategory] = useState<ActivityCategory>(
+    initialPreferences.category
+  );
+
+  const energyOptions: { label: string; value: EnergyLevel | "surprise" }[] = [
+    { label: "Low", value: "low" },
+    { label: "Medium", value: "medium" },
+    { label: "High", value: "high" },
+    { label: "Surprise me", value: "surprise" },
+  ];
+
+  const timeOptions: { label: string; value: UserPreferences["timeAvailable"] }[] =
+    [
+      { label: "1 min", value: 1 },
+      { label: "5 min", value: 5 },
+      { label: "10 min", value: 10 },
+      { label: "15+ min", value: 15 },
+      { label: "Any", value: "any" },
+    ];
+
+  const categoryOptions: { label: string; value: ActivityCategory }[] = [
+    { label: "Fun", value: "fun" },
+    { label: "Useful", value: "useful" },
+    { label: "Creative", value: "creative" },
+    { label: "Calm", value: "calm" },
+    { label: "Learn", value: "learn" },
+    { label: "Social", value: "social" },
+    { label: "Random", value: "random" },
+  ];
+
+  return (
+    <div className="preference-screen">
+      <div className="preference-header">
+        <button className="text-button" onClick={onBack}>
+          ← Back
+        </button>
+
+        <h2>What kind of thing?</h2>
+        <p>Choose what fits right now. You can keep it random too.</p>
+      </div>
+
+      <PreferenceGroup title="Energy">
+        {energyOptions.map((option) => (
+          <button
+            key={option.value}
+            className={energy === option.value ? "chip selected" : "chip"}
+            onClick={() => setEnergy(option.value)}
+          >
+            {option.label}
+          </button>
+        ))}
+      </PreferenceGroup>
+
+      <PreferenceGroup title="Time">
+        {timeOptions.map((option) => (
+          <button
+            key={option.value}
+            className={timeAvailable === option.value ? "chip selected" : "chip"}
+            onClick={() => setTimeAvailable(option.value)}
+          >
+            {option.label}
+          </button>
+        ))}
+      </PreferenceGroup>
+
+      <PreferenceGroup title="Category">
+        {categoryOptions.map((option) => (
+          <button
+            key={option.value}
+            className={category === option.value ? "chip selected" : "chip"}
+            onClick={() => setCategory(option.value)}
+          >
+            {option.label}
+          </button>
+        ))}
+      </PreferenceGroup>
+
+      <button
+        className="primary-button"
+        onClick={() =>
+          onSubmit({
+            energy,
+            timeAvailable,
+            category,
+          })
+        }
+      >
+        Give me a thing
+      </button>
+    </div>
+  );
+}
+
+function PreferenceGroup({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="preference-group">
+      <h3>{title}</h3>
+      <div className="chip-grid">{children}</div>
+    </section>
   );
 }
 
