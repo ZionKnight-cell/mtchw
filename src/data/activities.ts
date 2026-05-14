@@ -1,6 +1,7 @@
 import type { Activity } from "../types/activity";
+import { expandedActivities } from "./expandedActivities";
 
-export const activities: Activity[] = [
+const starterActivities: Activity[] = [
   {
     id: "useful-delete-screenshots-001",
     title: "Delete 10 old screenshots",
@@ -15,7 +16,8 @@ export const activities: Activity[] = [
   {
     id: "useful-clear-notifications-001",
     title: "Clear 5 old notifications",
-    instruction: "Open your notification shade and clear 5 notifications you do not need anymore.",
+    instruction:
+      "Open your notification shade and clear 5 notifications you do not need anymore.",
     category: "useful",
     energy: "low",
     timeMinutes: 1,
@@ -48,7 +50,8 @@ export const activities: Activity[] = [
   {
     id: "useful-tidy-small-area-001",
     title: "Tidy one tiny area",
-    instruction: "Pick one small area near you and tidy it for 2 minutes. Stop when the time is up.",
+    instruction:
+      "Pick one small area near you and tidy it for 2 minutes. Stop when the time is up.",
     category: "useful",
     energy: "medium",
     timeMinutes: 2,
@@ -239,7 +242,8 @@ export const activities: Activity[] = [
   {
     id: "learn-pretend-word-001",
     title: "Search a word you pretend to understand",
-    instruction: "Look up the meaning of a word you have seen before but never fully understood.",
+    instruction:
+      "Look up the meaning of a word you have seen before but never fully understood.",
     category: "learn",
     energy: "low",
     timeMinutes: 3,
@@ -328,7 +332,8 @@ export const activities: Activity[] = [
   {
     id: "social-check-on-someone-001",
     title: "Check on someone",
-    instruction: "Think of someone you have not spoken to recently and send a small check-in.",
+    instruction:
+      "Think of someone you have not spoken to recently and send a small check-in.",
     category: "social",
     energy: "medium",
     timeMinutes: 5,
@@ -381,10 +386,11 @@ export const activities: Activity[] = [
     moodTags: ["playful", "bored"],
     repeatable: true,
   },
-    {
+  {
     id: "random-look-under-chair-001",
     title: "Look under your chair",
-    instruction: "Look under your chair or table. Congratulations, you are on a tiny expedition.",
+    instruction:
+      "Look under your chair or table. Congratulations, you are on a tiny expedition.",
     category: "random",
     energy: "low",
     timeMinutes: 1,
@@ -392,6 +398,7 @@ export const activities: Activity[] = [
     moodTags: ["bored", "playful"],
     repeatable: true,
   },
+
   {
     id: "useful-fast-room-reset-001",
     title: "Do a 5-minute room reset",
@@ -480,10 +487,11 @@ export const activities: Activity[] = [
     moodTags: ["restless", "playful"],
     repeatable: true,
   },
-    {
+  {
     id: "learn-teach-one-thing-001",
     title: "Teach one thing out loud",
-    instruction: "Pick one small thing you know and explain it out loud like you are teaching someone.",
+    instruction:
+      "Pick one small thing you know and explain it out loud like you are teaching someone.",
     category: "learn",
     energy: "high",
     timeMinutes: 5,
@@ -492,3 +500,5 @@ export const activities: Activity[] = [
     repeatable: true,
   },
 ];
+
+export const activities: Activity[] = [...starterActivities, ...expandedActivities];
